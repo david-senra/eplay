@@ -1,18 +1,11 @@
-import { useState, useEffect } from 'react'
 import { ImagemBanner, TextoBanner, Titulo } from './styles'
 import Tag from '../Tag'
 import Button from '../Button'
-import { Jogo } from '../../pages/Home'
 import { formataPreco } from '../ProductsList'
+import { useGetFeaturedGameQuery } from '../../services/api'
 
 const Banner = () => {
-  const [gameDestaque, setGameDestaque] = useState<Jogo>()
-
-  useEffect(() => {
-    fetch('https://fake-api-tau.vercel.app/api/eplay/destaque')
-      .then((res) => res.json())
-      .then((res) => setGameDestaque(res))
-  }, [])
+  const { data: gameDestaque, isLoading } = useGetFeaturedGameQuery()
 
   if (!gameDestaque) {
     return <h3>Carregando...</h3>

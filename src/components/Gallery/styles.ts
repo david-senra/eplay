@@ -3,6 +3,8 @@ import { Cores } from '../../styles'
 
 export const ListaItems = styled.ul`
   display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 `
 export const ActionDiv = styled.div`
   position: absolute;
@@ -20,7 +22,6 @@ export const ActionDiv = styled.div`
 
 export const Item = styled.li`
   position: relative;
-  margin-right: 16px;
 
   > img {
     border: 2px solid ${Cores.branca};

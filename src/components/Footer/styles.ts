@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Cores } from '../../styles'
+import { HashLink } from 'react-router-hash-link'
 
 export const SectionFooter = styled.div`
   margin-bottom: 64px;
@@ -24,7 +25,7 @@ export const ListaLinksFooter = styled.ul`
   font-size: 14px;
 `
 
-export const LinkFooter = styled.a`
+export const LinkFooter = styled(HashLink)`
   color: ${Cores.cinzaClaro};
   text-decoration: none;
   margin-right: 8px;
