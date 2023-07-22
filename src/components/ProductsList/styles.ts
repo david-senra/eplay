@@ -31,6 +31,13 @@ export const List = styled.ul`
   }
 `
 
+export const Item = styled.li`
+  @media (max-width: ${breakpoints.desktop}) {
+    display: flex;
+    justify-content: center;
+  }
+`
+
 export const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;

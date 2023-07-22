@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 export const DivCard = styled.div`
   height: 455px;
   width: 222px;
+  text-align: center;
 `
 
 export const Card = styled(Link)`
