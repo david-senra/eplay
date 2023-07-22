@@ -3,6 +3,11 @@ import { Cores } from '../../styles'
 import { TagContainer } from '../Tag/styles'
 import { Link } from 'react-router-dom'
 
+export const DivCard = styled.div`
+  height: 455px;
+  width: 222px;
+`
+
 export const Card = styled(Link)`
   background-color: ${Cores.preta};
   border-radius: 8px;
@@ -11,6 +16,8 @@ export const Card = styled(Link)`
   text-decoration: none;
   display: block;
   color: ${Cores.branca};
+  width: 100%;
+  height: 100%;
 
   img {
     display: block;
@@ -32,11 +39,21 @@ export const Titulo = styled.h3`
   margin-bottom: 8px;
 `
 
+export const DivDescricao = styled.div`
+  height: 102px;
+  width: 100%;
+  overflow: hidden;
+  white-space: normal;
+`
+
 export const Descricao = styled.p`
   font-size: 14px;
   line-height: 22px;
   display: block;
   margin-top: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 `
 
 export const InfosDiv = styled.div`
