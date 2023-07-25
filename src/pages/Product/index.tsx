@@ -29,7 +29,7 @@ const Produto = () => {
           <b>Publisher: </b>
           {jogoAtual.details.publisher}
           <br />
-          <b>Idiomas: </b>O jogo oferece suporte a diversos idiomas, incluindo
+          <b>Idiomas: </b>O jogo oferece suporte a diversos idiomas, incluindo{' '}
           {jogoAtual.details.languages.join(', ')}
         </p>
       </Section>

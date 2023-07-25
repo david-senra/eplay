@@ -27,19 +27,6 @@ const Product = ({
   imagem,
   id
 }: PropProduct) => {
-  const getDescricao = (descricao: string) => {
-    if (titulo.length > 34) {
-      if (descricao.length > 75) {
-        return descricao.slice(0, 72) + '...'
-      }
-      return descricao
-    } else {
-      if (descricao.length > 100) {
-        return descricao.slice(0, 97) + '...'
-      }
-      return descricao
-    }
-  }
   return (
     <DivCard>
       <Card to={`/product/${id}`}>
