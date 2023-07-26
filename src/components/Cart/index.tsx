@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootReducer } from '../../store'
 import { close, remove } from '../../store/reducers/cart'
@@ -58,9 +59,15 @@ const Cart = () => {
           Total de {formataPreco(getTotalPrice())}
           <span>Em até 6 vezes sem juros</span>
         </Prices>
-        <Button title="Clique aqui para continuar com a compra" tipo="button">
-          Continuar com a compra
-        </Button>
+        <Link to="/checkout">
+          <Button
+            tipo="button"
+            title="Clique aqui para continuar com a compra"
+            onClick={closeCart}
+          >
+            Continuar com a compra
+          </Button>
+        </Link>
       </Aside>
     </DivPrincipal>
   )
