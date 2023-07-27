@@ -1,22 +1,24 @@
 import { Jogo } from '../../pages/Home'
 import Product from '../Product'
-import { ContainerList, List, Item } from './styles'
+import { formataPreco } from '../../utils'
+import * as S from './styles'
+import Loader from '../Loader'
 
 export type PropsProductsList = {
   titulo: string
   fundo: 'preto' | 'cinza'
-  jogos: Jogo[]
+  jogos?: Jogo[]
   id?: string
+  isLoading: boolean
 }
 
-export const formataPreco = (preco = 0) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(preco)
-}
-
-const ProductsList = ({ titulo, fundo, jogos, id }: PropsProductsList) => {
+const ProductsList = ({
+  titulo,
+  fundo,
+  jogos,
+  id,
+  isLoading
+}: PropsProductsList) => {
   const GetGameTags = (jogo: Jogo) => {
     const tags = []
 
@@ -29,27 +31,32 @@ const ProductsList = ({ titulo, fundo, jogos, id }: PropsProductsList) => {
     return tags
   }
 
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
-    <ContainerList id={id} fundo={fundo}>
+    <S.ContainerList id={id} fundo={fundo}>
       <div className="container">
-        <h2>{titulo}</h2>
-        <List>
-          {jogos.map((jogo) => (
-            <Item key={jogo.id}>
-              <Product
-                id={jogo.id}
-                titulo={jogo.name}
-                sistema={jogo.details.system}
-                categoria={jogo.details.category}
-                descricao={jogo.description}
-                imagem={jogo.media.thumbnail}
-                infos={GetGameTags(jogo)}
-              />
-            </Item>
-          ))}
-        </List>
+        <S.ListTitle>{titulo}</S.ListTitle>
+        <S.List>
+          {jogos &&
+            jogos.map((jogo) => (
+              <S.Item key={jogo.id}>
+                <Product
+                  id={jogo.id}
+                  titulo={jogo.name}
+                  sistema={jogo.details.system}
+                  categoria={jogo.details.category}
+                  descricao={jogo.description}
+                  imagem={jogo.media.thumbnail}
+                  infos={GetGameTags(jogo)}
+                />
+              </S.Item>
+            ))}
+        </S.List>
       </div>
-    </ContainerList>
+    </S.ContainerList>
   )
 }
 

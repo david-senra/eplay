@@ -14,6 +14,10 @@ export const Banner = styled.div`
 
   @media (max-width: ${breakpoints.tablet}) {
     background-size: cover;
+
+    ${TagContainer} {
+      margin-left: 8px;
+    }
   }
 
   &::after {
@@ -59,5 +63,9 @@ export const Infos = styled.div`
       display: block;
       text-decoration: line-through;
     }
+  }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    background-color: transparent;
   }
 `

@@ -1,15 +1,20 @@
 import { useParams } from 'react-router-dom'
+import { useGetPageGameQuery } from '../../services/api'
 import Hero from '../../components/Hero'
 import Section from '../../components/Section'
 import Gallery from '../../components/Gallery'
-import { useGetPageGameQuery } from '../../services/api'
+import Loader from '../../components/Loader'
+
+type TipoGameParams = {
+  id: string
+}
 
 const Produto = () => {
-  const { id } = useParams()
-  const { data: jogoAtual } = useGetPageGameQuery(id ? id : '0')
+  const { id } = useParams() as TipoGameParams
+  const { data: jogoAtual } = useGetPageGameQuery(id)
 
   if (!jogoAtual) {
-    return <h3>Carregando...</h3>
+    return <Loader />
   }
 
   return (

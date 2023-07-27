@@ -1,6 +1,6 @@
+import { useGetComingSoonQuery, useGetOnSaleQuery } from '../../services/api'
 import Banner from '../../components/Banner'
 import ProductsList from '../../components/ProductsList'
-import { useGetComingSoonQuery, useGetOnSaleQuery } from '../../services/api'
 
 export interface GalleryItem {
   type: 'image' | 'video'
@@ -32,29 +32,29 @@ export type Jogo = {
 }
 
 const Home = () => {
-  const { data: jogosPromocao } = useGetOnSaleQuery()
-  const { data: jogosEmBreve } = useGetComingSoonQuery()
+  const { data: jogosPromocao, isLoading: isLoadingSale } = useGetOnSaleQuery()
+  const { data: jogosEmBreve, isLoading: isLoadingSoon } =
+    useGetComingSoonQuery()
 
-  if (jogosPromocao && jogosEmBreve) {
-    return (
-      <>
-        <Banner />
-        <ProductsList
-          id={'on-sale'}
-          jogos={jogosPromocao}
-          titulo="Promoções"
-          fundo="cinza"
-        />
-        <ProductsList
-          id={'coming-soon'}
-          jogos={jogosEmBreve}
-          titulo="Em Breve"
-          fundo="preto"
-        />
-      </>
-    )
-  }
-  return <h2>Carregando...</h2>
+  return (
+    <>
+      <Banner />
+      <ProductsList
+        id={'on-sale'}
+        jogos={jogosPromocao}
+        titulo="Promoções"
+        fundo="cinza"
+        isLoading={isLoadingSale}
+      />
+      <ProductsList
+        id={'coming-soon'}
+        jogos={jogosEmBreve}
+        titulo="Em Breve"
+        fundo="preto"
+        isLoading={isLoadingSoon}
+      />
+    </>
+  )
 }
 
 export default Home

@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import * as S from './styles'
-import Section from '../Section'
 import playImg from '../../assets/images/play.png'
 import zoomImg from '../../assets/images/zoom.png'
 import fecharImg from '../../assets/images/fechar.png'
+import * as S from './styles'
+import Section from '../Section'
 import { GalleryItem } from '../../pages/Home'
 
 type PropsItem = {

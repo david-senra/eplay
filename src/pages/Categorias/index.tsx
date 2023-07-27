@@ -1,4 +1,3 @@
-import ProductsList from '../../components/ProductsList'
 import {
   useGetActionGamesQuery,
   useGetFightingGamesQuery,
@@ -6,37 +5,58 @@ import {
   useGetSimulationGamesQuery,
   useGetSportsGamesQuery
 } from '../../services/api'
+import ProductsList from '../../components/ProductsList'
 
 const Categorias = () => {
-  const { data: jogosAcao } = useGetActionGamesQuery()
-  const { data: jogosRPG } = useGetRPGGamesQuery()
-  const { data: jogosSimulacao } = useGetSimulationGamesQuery()
-  const { data: jogosLuta } = useGetFightingGamesQuery()
-  const { data: jogosEsporte } = useGetSportsGamesQuery()
+  const { data: jogosAcao, isLoading: jogosAcaoLoading } =
+    useGetActionGamesQuery()
+  const { data: jogosRPG, isLoading: jogosRPGLoading } = useGetRPGGamesQuery()
+  const { data: jogosSimulacao, isLoading: jogosSimulacaoLoading } =
+    useGetSimulationGamesQuery()
+  const { data: jogosLuta, isLoading: jogosLutaLoading } =
+    useGetFightingGamesQuery()
+  const { data: jogosEsporte, isLoading: jogosEsporteLoading } =
+    useGetSportsGamesQuery()
 
-  if (jogosAcao && jogosEsporte && jogosLuta && jogosRPG && jogosSimulacao) {
-    return (
-      <>
-        <ProductsList jogos={jogosAcao} titulo="Ação" fundo="preto" id="acao" />
-        <ProductsList jogos={jogosRPG} titulo="RPG" fundo="cinza" id="rpg" />
-        <ProductsList
-          jogos={jogosSimulacao}
-          titulo="Simulação"
-          fundo="preto"
-          id="simulacao"
-        />
-        <ProductsList jogos={jogosLuta} titulo="Luta" fundo="cinza" id="luta" />
-        <ProductsList
-          jogos={jogosEsporte}
-          titulo="Esportes"
-          fundo="preto"
-          id="esportes"
-        />
-      </>
-    )
-  }
-
-  return <h2>Carregando</h2>
+  return (
+    <>
+      <ProductsList
+        jogos={jogosAcao}
+        isLoading={jogosAcaoLoading}
+        titulo="Ação"
+        fundo="preto"
+        id="acao"
+      />
+      <ProductsList
+        jogos={jogosRPG}
+        isLoading={jogosRPGLoading}
+        titulo="RPG"
+        fundo="cinza"
+        id="rpg"
+      />
+      <ProductsList
+        jogos={jogosSimulacao}
+        isLoading={jogosSimulacaoLoading}
+        titulo="Simulação"
+        fundo="preto"
+        id="simulacao"
+      />
+      <ProductsList
+        jogos={jogosLuta}
+        isLoading={jogosLutaLoading}
+        titulo="Luta"
+        fundo="cinza"
+        id="luta"
+      />
+      <ProductsList
+        jogos={jogosEsporte}
+        isLoading={jogosEsporteLoading}
+        titulo="Esportes"
+        fundo="preto"
+        id="esportes"
+      />
+    </>
+  )
 }
 
 export default Categorias

@@ -18,11 +18,13 @@ export const Row = styled.div<LineType>`
   column-gap: 24px;
   margin-top: ${({ marginTop }) => marginTop || '0'};
   align-items: flex-end;
+  height: 76px;
 `
 
 export const InputGroup = styled.div<InputType>`
   flex: auto;
   max-width: ${({ maxWidth }) => maxWidth || 'auto'};
+  height: 100%;
 
   label {
     font-size: 14px;
@@ -37,7 +39,21 @@ export const InputGroup = styled.div<InputType>`
     height: 32px;
     padding: 0 8px;
     width: 100%;
+
+    &.error {
+      border: 2px solid red;
+    }
   }
+`
+
+export const ErroMensagem = styled.small`
+  color: gold;
+  font-size: 12px;
+`
+
+export const ErroMensagemGeral = styled(ErroMensagem)`
+  display: block;
+  padding-top: 10px;
 `
 
 export const TabButton = styled.button<TabButtonType>`

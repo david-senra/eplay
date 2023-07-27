@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Cores } from '../../styles'
+import { Cores, breakpoints } from '../../styles'
 import { Card } from '../Product/styles'
 import { PropsSection } from '.'
 
@@ -20,10 +20,19 @@ export const ContainerList = styled.section<
     line-height: 22px;
     max-width: 640px;
   }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 `
 
 export const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 40px;
+
+  @media (max-width: ${breakpoints.tablet}) {
+    text-align: center;
+  }
 `

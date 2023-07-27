@@ -1,21 +1,19 @@
-import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
 import { RootReducer } from '../../store'
 import { close, remove } from '../../store/reducers/cart'
-import { formataPreco } from '../ProductsList'
+
+import { formataPreco, getTotalPrice } from '../../utils'
+
 import Tag from '../Tag'
 import Button from '../Button'
-import {
-  DivOverlay,
-  Aside,
-  DivPrincipal,
-  Prices,
-  Quantity,
-  CartItem
-} from './styles'
+import * as S from './styles'
 
 const Cart = () => {
   const { isOpen, items } = useSelector((state: RootReducer) => state.cart)
+
+  const navigate = useNavigate()
 
   const dispatch = useDispatch()
 
@@ -28,21 +26,18 @@ const Cart = () => {
     dispatch(remove(id))
   }
 
-  const getTotalPrice = () => {
-    return items.reduce((acumulador, valorAtual) => {
-      return (acumulador += valorAtual.prices.current
-        ? valorAtual.prices.current
-        : 0)
-    }, 0)
+  const goToCheckOut = () => {
+    closeCart()
+    navigate('/checkout')
   }
 
   return (
-    <DivPrincipal className={isOpen ? 'is-open' : ''}>
-      <DivOverlay onClick={closeCart} />
-      <Aside>
+    <S.DivPrincipal className={isOpen ? 'is-open' : ''}>
+      <S.DivOverlay onClick={closeCart} />
+      <S.Aside>
         <ul>
           {items.map(({ id, media, name, details, prices }) => (
-            <CartItem key={id}>
+            <S.CartItem key={id}>
               <img src={media.cover} />
               <div>
                 <h3>{name}</h3>
@@ -51,25 +46,31 @@ const Cart = () => {
                 <span>{formataPreco(prices.current)}</span>
               </div>
               <button type="button" onClick={() => removeItem(id)} />
-            </CartItem>
+            </S.CartItem>
           ))}
         </ul>
-        <Quantity>{items.length} jogos(s) no carrinho</Quantity>
-        <Prices>
-          Total de {formataPreco(getTotalPrice())}
-          <span>Em até 6 vezes sem juros</span>
-        </Prices>
-        <Link to="/checkout">
-          <Button
-            tipo="button"
-            title="Clique aqui para continuar com a compra"
-            onClick={closeCart}
-          >
-            Continuar com a compra
-          </Button>
-        </Link>
-      </Aside>
-    </DivPrincipal>
+        <S.Quantity>
+          {items.length === 0
+            ? 'Não há jogos no carrinho'
+            : `${items.length} jogo${items.length > 1 ? 's' : ''} no carrinho`}
+        </S.Quantity>
+        <S.Prices>
+          {items.length === 0
+            ? ''
+            : `Total de ${formataPreco(getTotalPrice(items))}`}
+          <span>{items.length === 0 ? '' : 'Em até 6 vezes sem juros!'}</span>
+        </S.Prices>
+        <Button
+          tipo="button"
+          title="Clique aqui para continuar com a compra"
+          onClick={goToCheckOut}
+        >
+          {items.length > 0
+            ? 'Continuar com a compra'
+            : 'Retornar para o menu principal'}
+        </Button>
+      </S.Aside>
+    </S.DivPrincipal>
   )
 }
 

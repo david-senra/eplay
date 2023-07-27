@@ -1,12 +1,5 @@
 import Tag from '../Tag'
-import {
-  DivCard,
-  Card,
-  Descricao,
-  Titulo,
-  InfosDiv,
-  DivDescricao
-} from './styles'
+import * as S from './styles'
 
 type PropProduct = {
   titulo: string
@@ -28,22 +21,25 @@ const Product = ({
   id
 }: PropProduct) => {
   return (
-    <DivCard>
-      <Card to={`/product/${id}`}>
+    <S.DivCard>
+      <S.Card
+        title={`Clique aqui para ver mais detalhes do jogo: ${titulo}`}
+        to={`/product/${id}`}
+      >
         <img src={imagem} alt={titulo} />
-        <InfosDiv>
+        <S.InfosDiv>
           {infos.map((info) => (
             <Tag key={info}>{info}</Tag>
           ))}
-        </InfosDiv>
-        <Titulo>{titulo}</Titulo>
+        </S.InfosDiv>
+        <S.Titulo>{titulo}</S.Titulo>
         <Tag>{categoria}</Tag>
         <Tag>{sistema}</Tag>
-        <DivDescricao>
-          <Descricao>{descricao}</Descricao>
-        </DivDescricao>
-      </Card>
-    </DivCard>
+        <S.DivDescricao>
+          <S.Descricao>{descricao}</S.Descricao>
+        </S.DivDescricao>
+      </S.Card>
+    </S.DivCard>
   )
 }
 

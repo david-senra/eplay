@@ -4,7 +4,7 @@ import { Cores, breakpoints } from '../../styles'
 import { Card } from '../Product/styles'
 
 export const ContainerList = styled.section<
-  Omit<PropsProductsList, 'titulo' | 'jogos'>
+  Omit<PropsProductsList, 'titulo' | 'jogos' | 'isLoading'>
 >`
   padding: 32px 0;
   background-color: ${({ fundo }) =>
@@ -41,4 +41,10 @@ export const Item = styled.li`
 export const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
+`
+
+export const ListTitle = styled.h2`
+  @media (max-width: ${breakpoints.tablet}) {
+    text-align: center;
+  }
 `

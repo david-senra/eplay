@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { TagContainer } from '../Tag/styles'
+import { breakpoints } from '../../styles'
 
 export const ImagemBanner = styled.div`
   position: relative;
@@ -17,6 +18,14 @@ export const ImagemBanner = styled.div`
     justify-content: space-between;
     align-items: flex-end;
     z-index: 1;
+
+    @media (max-width: ${breakpoints.tablet}) {
+      width: 80%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+    }
   }
 
   ${TagContainer} {
@@ -32,6 +41,10 @@ export const ImagemBanner = styled.div`
     height: 100%;
     background-color: rgba(0, 0, 0, 0.55);
     content: '';
+  }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    background-position: center;
   }
 `
 

@@ -1,54 +1,83 @@
-import {
-  ContainerFooter,
-  SectionFooter,
-  FooterTitle,
-  ListaLinksFooter,
-  LinkFooter
-} from './styles'
+import * as S from './styles'
 
 const currentYear = new Date().getFullYear()
 
 const Footer = () => (
-  <ContainerFooter>
+  <S.ContainerFooter>
     <div className="container">
-      <SectionFooter>
-        <FooterTitle>Categorias</FooterTitle>
-        <ListaLinksFooter>
+      <S.SectionFooter>
+        <S.FooterTitle>Categorias</S.FooterTitle>
+        <S.ListaLinksFooter>
           <li>
-            <LinkFooter to="/categorias#rpg">RPG</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar jogos de RPG"
+              to="/categorias#rpg"
+            >
+              RPG
+            </S.LinkFooter>
           </li>
           <li>
-            <LinkFooter to="/categorias#acao">Ação</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar jogos de Ação"
+              to="/categorias#acao"
+            >
+              Ação
+            </S.LinkFooter>
           </li>
           <li>
-            <LinkFooter to="/categorias#esportes">Esportes</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar jogos de Esportes"
+              to="/categorias#esportes"
+            >
+              Esportes
+            </S.LinkFooter>
           </li>
           <li>
-            <LinkFooter to="/categorias#simulacao">Simulação</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar jogos de Simulação"
+              to="/categorias#simulacao"
+            >
+              Simulação
+            </S.LinkFooter>
           </li>
           <li>
-            <LinkFooter to="/categorias#luta">Luta</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar jogos de Luta"
+              to="/categorias#luta"
+            >
+              Luta
+            </S.LinkFooter>
           </li>
-        </ListaLinksFooter>
-      </SectionFooter>
-      <SectionFooter>
-        <FooterTitle>Acesso Rápido</FooterTitle>
-        <ListaLinksFooter>
+        </S.ListaLinksFooter>
+      </S.SectionFooter>
+      <S.SectionFooter>
+        <S.FooterTitle>Acesso Rápido</S.FooterTitle>
+        <S.ListaLinksFooter>
           <li>
-            <LinkFooter to="/#on-sale">Promoções</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar a seção de Jogos em Promoção"
+              to="/#on-sale"
+            >
+              Promoções
+            </S.LinkFooter>
           </li>
           <li>
-            <LinkFooter to="/#coming-soon">Em Breve</LinkFooter>
+            <S.LinkFooter
+              title="Clique aqui para acessar a seção de jogos que serão lançados em breve"
+              to="/#coming-soon"
+            >
+              Em Breve
+            </S.LinkFooter>
           </li>
-        </ListaLinksFooter>
-      </SectionFooter>
-      <SectionFooter>
-        <FooterTitle>
+        </S.ListaLinksFooter>
+      </S.SectionFooter>
+      <S.SectionFooter>
+        <S.FooterTextEnd>
           {currentYear} - &copy; E-PLAY - Todos os direitos reservados
-        </FooterTitle>
-      </SectionFooter>
+        </S.FooterTextEnd>
+      </S.SectionFooter>
     </div>
-  </ContainerFooter>
+  </S.ContainerFooter>
 )
 
 export default Footer

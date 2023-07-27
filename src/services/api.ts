@@ -1,6 +1,44 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Jogo } from '../pages/Home'
 
+type ProductType = {
+  id: number
+  price: number
+}
+
+type PurchaseResponseType = {
+  orderId: string
+}
+
+type PurchasePayload = {
+  products: ProductType[]
+  billing: {
+    name: string
+    email: string
+    document: string
+  }
+  delivery: {
+    email: string
+  }
+  payment: {
+    card: {
+      active: boolean
+      owner?: {
+        name: string
+        document: string
+      }
+      name?: string
+      number?: string
+      expires?: {
+        month: number
+        year: number
+      }
+      code?: number
+    }
+    installments: number
+  }
+}
+
 const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://fake-api-tau.vercel.app/api/eplay'
@@ -32,6 +70,13 @@ const api = createApi({
     }),
     getPageGame: builder.query<Jogo, string>({
       query: (id) => `jogos/${id}`
+    }),
+    purchase: builder.mutation<PurchaseResponseType, PurchasePayload>({
+      query: (body) => ({
+        url: 'checkout',
+        method: 'POST',
+        body: body
+      })
     })
   })
 })
@@ -45,7 +90,8 @@ export const {
   useGetSimulationGamesQuery,
   useGetSportsGamesQuery,
   useGetFightingGamesQuery,
-  useGetPageGameQuery
+  useGetPageGameQuery,
+  usePurchaseMutation
 } = api
 
 export default api

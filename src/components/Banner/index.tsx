@@ -1,14 +1,15 @@
+import { useGetFeaturedGameQuery } from '../../services/api'
+import { formataPreco } from '../../utils'
 import { ImagemBanner, TextoBanner, Titulo } from './styles'
 import Tag from '../Tag'
 import Button from '../Button'
-import { formataPreco } from '../ProductsList'
-import { useGetFeaturedGameQuery } from '../../services/api'
+import Loader from '../Loader'
 
 const Banner = () => {
-  const { data: gameDestaque, isLoading } = useGetFeaturedGameQuery()
+  const { data: gameDestaque } = useGetFeaturedGameQuery()
 
   if (!gameDestaque) {
-    return <h3>Carregando...</h3>
+    return <Loader />
   }
 
   return (
