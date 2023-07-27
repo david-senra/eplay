@@ -28,7 +28,7 @@ const Cart = () => {
 
   const goToCheckOut = () => {
     closeCart()
-    navigate('/checkout')
+    navigate('/checkout/')
   }
 
   return (
@@ -40,9 +40,9 @@ const Cart = () => {
             <S.CartItem key={id}>
               <img src={media.cover} />
               <div>
-                <h3>{name}</h3>
                 <Tag>{details.category}</Tag>
                 <Tag>{details.system}</Tag>
+                <h3>{name}</h3>
                 <span>{formataPreco(prices.current)}</span>
               </div>
               <button type="button" onClick={() => removeItem(id)} />
@@ -51,7 +51,7 @@ const Cart = () => {
         </ul>
         <S.Quantity>
           {items.length === 0
-            ? 'Não há jogos no carrinho'
+            ? 'Não há nenhum produto no carrinho!'
             : `${items.length} jogo${items.length > 1 ? 's' : ''} no carrinho`}
         </S.Quantity>
         <S.Prices>
@@ -63,11 +63,9 @@ const Cart = () => {
         <Button
           tipo="button"
           title="Clique aqui para continuar com a compra"
-          onClick={goToCheckOut}
+          onClick={items.length === 0 ? closeCart : goToCheckOut}
         >
-          {items.length > 0
-            ? 'Continuar com a compra'
-            : 'Retornar para o menu principal'}
+          {items.length > 0 ? 'Continuar com a compra' : 'Fechar'}
         </Button>
       </S.Aside>
     </S.DivPrincipal>

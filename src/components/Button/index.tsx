@@ -1,21 +1,11 @@
-import { ButtonContainer, ButtonLink } from './styles'
-
-export type PropsButton = {
-  tipo: 'button' | 'link' | 'submit'
-  type?: string
-  title: string
-  to?: string
-  onClick?: () => void
-  children?: string
-  variant?: 'primary' | 'secondary'
-  disabled?: boolean
-}
+import { ButtonContainer, ButtonHashLink, ButtonLink } from './styles'
 
 const Button = ({
   type,
   tipo,
   title,
   to,
+  classe,
   onClick,
   children,
   variant = 'primary',
@@ -30,9 +20,16 @@ const Button = ({
         title={title}
         onClick={onClick}
         disabled={disabled}
+        className={classe}
       >
         {children}
       </ButtonContainer>
+    )
+  } else if (tipo === 'hashlink') {
+    return (
+      <ButtonHashLink to={to as string} title={title}>
+        {children}
+      </ButtonHashLink>
     )
   }
 

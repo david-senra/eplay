@@ -60,10 +60,11 @@ const Header = () => {
             </S.MenuLinks>
           </nav>
         </div>
-        <S.CartButton onClick={openCart}>
+        <S.CartButton role="button" onClick={openCart}>
           <div>
             {items.length}
-            <span> - produto(s)</span>
+            {items.length === 1 && <span> produto</span>}
+            {items.length > 1 && <span> produtos</span>}
           </div>
           <img src={carrinhoImagem} alt="carrinho" />
         </S.CartButton>

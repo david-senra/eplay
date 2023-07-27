@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux'
 import { add, open } from '../../store/reducers/cart'
-import { Jogo } from '../../pages/Home'
 import { formataPreco } from '../../utils'
 import Button from '../Button'
 import Tag from '../Tag'
@@ -19,7 +18,10 @@ const Hero = ({ jogo }: PropsHero) => {
   }
 
   return (
-    <S.Banner style={{ backgroundImage: `url(${jogo.media.cover})` }}>
+    <S.Banner
+      id="banner"
+      style={{ backgroundImage: `url(${jogo.media.cover})` }}
+    >
       <div className="container">
         <div>
           <Tag>{jogo.details.category}</Tag>

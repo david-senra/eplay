@@ -27,8 +27,8 @@ const Banner = () => {
           </TextoBanner>
         </div>
         <Button
-          tipo="link"
-          to={`/product/${gameDestaque.id}`}
+          tipo="hashlink"
+          to={`/product/${gameDestaque.id}/#banner`}
           title="Clique aqui para aproveitar esta oferta!"
         >
           Aproveitar

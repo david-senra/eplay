@@ -1,16 +1,7 @@
-import { Jogo } from '../../pages/Home'
 import Product from '../Product'
 import { formataPreco } from '../../utils'
 import * as S from './styles'
 import Loader from '../Loader'
-
-export type PropsProductsList = {
-  titulo: string
-  fundo: 'preto' | 'cinza'
-  jogos?: Jogo[]
-  id?: string
-  isLoading: boolean
-}
 
 const ProductsList = ({
   titulo,

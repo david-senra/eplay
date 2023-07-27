@@ -24,7 +24,7 @@ const Product = ({
     <S.DivCard>
       <S.Card
         title={`Clique aqui para ver mais detalhes do jogo: ${titulo}`}
-        to={`/product/${id}`}
+        to={`/product/${id}/#banner`}
       >
         <img src={imagem} alt={titulo} />
         <S.InfosDiv>

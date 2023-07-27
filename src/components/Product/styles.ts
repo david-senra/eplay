@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Cores } from '../../styles'
 import { TagContainer } from '../Tag/styles'
-import { Link } from 'react-router-dom'
+import { HashLink } from 'react-router-hash-link'
 
 export const DivCard = styled.div`
   height: 455px;
@@ -9,7 +9,7 @@ export const DivCard = styled.div`
   text-align: center;
 `
 
-export const Card = styled(Link)`
+export const Card = styled(HashLink)`
   background-color: ${Cores.preta};
   border-radius: 8px;
   padding: 8px;

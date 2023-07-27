@@ -1,33 +1,34 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+import InputMask from 'react-input-mask'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { usePurchaseMutation } from '../../services/api'
 import { RootReducer } from '../../store'
-import { reset } from '../../store/reducers/cart'
+import { clear } from '../../store/reducers/cart'
+import { addOrder } from '../../store/reducers/orders'
 import Button from '../../components/Button'
 import Card from '../../components/Card'
 import boletoImg from '../../assets/images/boleto.svg'
 import cartaoImg from '../../assets/images/cartao.svg'
-import { getTotalPrice, formataPreco } from '../../utils'
+import { getTotalPrice, formataPreco, getTotalPricePedido } from '../../utils'
 import * as S from './styles'
-
-type InstallmentsType = {
-  quantity: number
-  amount: number
-  formattedAmount: string
-}
 
 const Checkout = () => {
   const { items } = useSelector((state: RootReducer) => state.cart)
+  const { produtos } = useSelector((state: RootReducer) => state.orders)
   const [payWithCard, setPayWithCard] = useState(false)
   const [purchase, { data, isSuccess, isLoading }] = usePurchaseMutation()
   const [installments, setInstallments] = useState<InstallmentsType[]>([])
+  const dispatch = useDispatch()
 
   const totalPrice = getTotalPrice(items)
-
-  const dispatch = useDispatch()
+  const ProdutosCheckOut: TipoProdutoCheckout[] = items.map((item) => ({
+    id: item.id,
+    price: item.prices.current as number,
+    nome: item.name
+  }))
 
   useEffect(() => {
     const calculateInstallments = () => {
@@ -44,10 +45,16 @@ const Checkout = () => {
     if (totalPrice > 0) setInstallments(calculateInstallments())
   }, [totalPrice])
 
-  const SuccessReset = () => {
-    dispatch(reset())
-    window.scrollTo({ top: 0 })
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(clear())
+      window.scrollTo({ top: 180 })
+    }
+  }, [dispatch, isSuccess])
+
+  useEffect(() => {
+    window.scrollTo({ top: 180 })
+  }, [])
 
   const form = useFormik({
     initialValues: {
@@ -68,46 +75,65 @@ const Checkout = () => {
     validationSchema: Yup.object({
       fullName: Yup.string()
         .min(5, 'O nome deve ter pelo menos 5 caracteres')
-        .required('O campo é obrigatório'),
+        .required('Campo obrigatório'),
       email: Yup.string()
         .email('Por favor, insira um e-mail válido')
-        .required('O campo é obrigatório'),
+        .required('Campo obrigatório'),
       cpf: Yup.string()
-        .min(14, 'O campo precisa ter 14 caracteres')
-        .max(14, 'O campo não pode ter mais de 14 caracteres')
-        .required('O campo é obrigatório'),
+        .min(14, 'O CPF deve ter 11 dígitos')
+        .required('Campo obrigatório'),
       deliveryEmail: Yup.string()
         .email('Por favor, insira um e-mail válido')
-        .required('O campo é obrigatório'),
+        .required('Campo obrigatório'),
       confirmDeliveryEmail: Yup.string()
         .oneOf(
           [Yup.ref('deliveryEmail')],
           'Os e-mails informados precisam ser iguais!'
         )
-        .required('O campo é obrigatório'),
+        .required('Campo obrigatório'),
 
       cardOwner: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      cpfCardOwner: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      cardDisplayName: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      cardNumber: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      expireMonth: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      expireYear: Yup.string().when((values, schema) =>
-        payWithCard ? schema.required('O campo é obrigatório') : schema
-      ),
-      cardCode: Yup.string().when((values, schema) =>
         payWithCard ? schema.required('Campo obrigatório') : schema
       ),
-      installments: Yup.string().when((values, schema) =>
+      cpfCardOwner: Yup.string().when((values, schema) =>
+        payWithCard
+          ? schema
+              .required('Campo obrigatório')
+              .min(14, 'O CPF deve ter 11 dígitos')
+          : schema
+      ),
+      cardDisplayName: Yup.string().when((values, schema) =>
+        payWithCard ? schema.required('Campo obrigatório') : schema
+      ),
+      cardNumber: Yup.string().when((values, schema) =>
+        payWithCard
+          ? schema
+              .required('Campo obrigatório')
+              .min(19, 'Cartão incompleto. Preencha todos os dígitos.')
+          : schema
+      ),
+      expireMonth: Yup.number().when((values, schema) =>
+        payWithCard
+          ? schema
+              .required('Campo obrigatório')
+              .max(12, 'Insira um mês válido')
+              .min(1, 'Insira um mês válido')
+          : schema
+      ),
+      expireYear: Yup.number().when((values, schema) =>
+        payWithCard
+          ? schema
+              .min(2024, 'Insira um ano válido')
+              .max(2050, 'Insira um ano válido')
+              .required('O campo é obrigatório')
+          : schema
+      ),
+      cardCode: Yup.string().when((values, schema) =>
+        payWithCard
+          ? schema.required('Campo obrigatório').min(3, 'Código inválido')
+          : schema
+      ),
+      installments: Yup.number().when((values, schema) =>
         payWithCard ? schema.required('O campo é obrigatório') : schema
       )
     }),
@@ -122,7 +148,7 @@ const Checkout = () => {
           email: values.deliveryEmail
         },
         payment: {
-          installments: 1,
+          installments: values.installments,
           card: {
             active: payWithCard,
             owner: {
@@ -132,22 +158,31 @@ const Checkout = () => {
             name: values.cardDisplayName,
             number: values.cardNumber,
             expires: {
-              month: 1,
-              year: 2023
+              month: Number(values.expireMonth),
+              year: Number(values.expireYear)
             },
             code: Number(values.cardCode)
           }
         },
-        products: items.map((item) => ({
+        products: ProdutosCheckOut.map((item) => ({
           id: item.id,
-          price: item.prices.current as number
+          price: item.price
         }))
       })
         .unwrap()
-        .then((payload) => payload && SuccessReset())
-        .catch((error) => error && console.error('rejected', error))
+        .then(() => dispatch(addOrder(ProdutosCheckOut)))
+      // .catch((error) => error && console.error('rejected', error)) - ação após erro - mesma lógica acima
     }
   })
+
+  useEffect(() => {
+    const el = document.querySelector('.error')
+    const elm = el && el.closest('.card-inputs')
+    elm &&
+      elm.scrollIntoView({
+        behavior: 'smooth'
+      })
+  }, [form.isSubmitting])
 
   const payCard = () => {
     setPayWithCard(true)
@@ -195,31 +230,31 @@ const Checkout = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container" id="principal">
       {isSuccess && data ? (
         <Card title="Muito Obrigado">
           <>
             <p>
               É com satisfação que informamos que recebemos seu pedido com
               sucesso! <br />
-              Abaixo estão os detalhes da sua compra:
-              <br />
-              Número do pedido: {data.orderId}
-              <br /> Forma de pagamento:{' '}
-              {payWithCard ? 'Cartão de crédito' : 'Boleto Bancário'}
             </p>
-            <p className="margin-top">
-              Caso tenha optado pelo pagamento via boleto bancário, lembre-se de
-              que a confirmação pode levar até 3 dias úteis.
-              <br /> Após a aprovação do pagamento, enviaremos um e-mail
-              contendo o código de ativação do jogo.
-            </p>
-            <p className="margin-top">
-              Se você optou pelo pagamento com cartão de crédito, a liberação do
-              código de ativação ocorrerá após a aprovação da transação pela
-              operadora do cartão.
-              <br /> Você receberá o código no e-mail cadastrado em nossa loja.
-            </p>
+            {!payWithCard && (
+              <p className="margin-top">
+                Como você optou por pagamento via boleto bancário, lembre-se de
+                que a confirmação pode levar até 3 dias úteis.
+                <br /> Após a aprovação do pagamento, enviaremos um e-mail
+                contendo o código de ativação do jogo.
+              </p>
+            )}
+            {payWithCard && (
+              <p className="margin-top">
+                Como você optou pelo pagamento com cartão de crédito, a
+                liberação do código de ativação ocorrerá somente após a
+                aprovação da transação pela operadora do cartão.
+                <br /> Você receberá o código no e-mail cadastrado em nossa
+                loja.
+              </p>
+            )}
             <p className="margin-top">
               Pedimos que verifique sua caixa de entrada e a pasta de spam para
               garantir que receba nossa comunicação.
@@ -231,11 +266,41 @@ const Checkout = () => {
               Agradecemos por escolher a EPLAY e esperamos que desfrute do seu
               jogo!
             </p>
+            <S.TituloCompra>Detalhes da sua Compra:</S.TituloCompra>
+            <S.DivPedido>
+              <S.DivNumeroProduto>
+                <p>Número do pedido:</p>
+                <S.TextoPedido>{data.orderId}</S.TextoPedido>
+              </S.DivNumeroProduto>
+              <S.DivFormaPagamento>
+                <p>Forma de pagamento:</p>
+                <S.TextoPedido>
+                  {payWithCard ? 'Cartão de crédito' : 'Boleto Bancário'}
+                </S.TextoPedido>
+              </S.DivFormaPagamento>
+              <S.DivTextoProdutos>
+                <p>Produtos:</p>
+              </S.DivTextoProdutos>
+              <S.DivListaProdutos>
+                {produtos.map((produto) => (
+                  <S.DivProduto key={produto.id}>
+                    <p>{produto.nome}</p>
+                    <span>{formataPreco(produto.price)}</span>
+                  </S.DivProduto>
+                ))}
+              </S.DivListaProdutos>
+              <S.DivPrecoFinal>
+                <S.TextoPrecoFinal>Valor Total:</S.TextoPrecoFinal>
+                <S.ValorPrecoFinal>
+                  {formataPreco(getTotalPricePedido(produtos))}
+                </S.ValorPrecoFinal>
+              </S.DivPrecoFinal>
+            </S.DivPedido>
           </>
         </Card>
       ) : (
         <form className="container" onSubmit={form.handleSubmit}>
-          <Card title="Dados de Cobrança">
+          <Card className="card-inputs" title="Dados de Cobrança">
             <>
               <S.Row>
                 <S.InputGroup maxWidth="309.333px">
@@ -270,7 +335,7 @@ const Checkout = () => {
                 </S.InputGroup>
                 <S.InputGroup maxWidth="309.333px">
                   <label htmlFor="cpf">CPF</label>
-                  <input
+                  <InputMask
                     id="cpf"
                     type="text"
                     name="cpf"
@@ -278,79 +343,87 @@ const Checkout = () => {
                     onChange={form.handleChange}
                     onBlur={form.handleBlur}
                     className={checkInputhasError('cpf') ? 'error' : ''}
+                    mask="999.999.999-99"
+                    maskChar={''}
                   />
                   <S.ErroMensagem>
                     {getErrorMessage('cpf', form.errors.cpf)}
                   </S.ErroMensagem>
                 </S.InputGroup>
               </S.Row>
-              <h3 className="margin-top">
-                Dados de entrega - conteúdo digital
-              </h3>
-              <S.Row>
-                <S.InputGroup maxWidth="309.333px">
-                  <label htmlFor="deliveryEmail">E-mail</label>
-                  <input
-                    id="deliveryEmail"
-                    type="email"
-                    name="deliveryEmail"
-                    value={form.values.deliveryEmail}
-                    onChange={form.handleChange}
-                    onBlur={form.handleBlur}
-                    className={
-                      checkInputhasError('deliveryEmail') ? 'error' : ''
-                    }
-                  />
-                  <S.ErroMensagem>
-                    {getErrorMessage(
-                      'deliveryEmail',
-                      form.errors.deliveryEmail
-                    )}
-                  </S.ErroMensagem>
-                </S.InputGroup>
-                <S.InputGroup maxWidth="309.333px">
-                  <label htmlFor="confirmDeliveryEmail">
-                    Confirme o e-mail
-                  </label>
-                  <input
-                    id="confirmDeliveryEmail"
-                    type="email"
-                    name="confirmDeliveryEmail"
-                    value={form.values.confirmDeliveryEmail}
-                    onChange={form.handleChange}
-                    onBlur={form.handleBlur}
-                    className={
-                      checkInputhasError('confirmDeliveryEmail') ? 'error' : ''
-                    }
-                  />
-                  <S.ErroMensagem>
-                    {getErrorMessage(
-                      'confirmDeliveryEmail',
-                      form.errors.confirmDeliveryEmail
-                    )}
-                  </S.ErroMensagem>
-                </S.InputGroup>
-              </S.Row>
+              <S.DivEntrega className="card-inputs">
+                <h3 className="card-inputs">
+                  Dados de entrega - conteúdo digital
+                </h3>
+                <S.Row>
+                  <S.InputGroup maxWidth="309.333px">
+                    <label htmlFor="deliveryEmail">E-mail</label>
+                    <input
+                      id="deliveryEmail"
+                      type="email"
+                      name="deliveryEmail"
+                      value={form.values.deliveryEmail}
+                      onChange={form.handleChange}
+                      onBlur={form.handleBlur}
+                      className={
+                        checkInputhasError('deliveryEmail') ? 'error' : ''
+                      }
+                    />
+                    <S.ErroMensagem>
+                      {getErrorMessage(
+                        'deliveryEmail',
+                        form.errors.deliveryEmail
+                      )}
+                    </S.ErroMensagem>
+                  </S.InputGroup>
+                  <S.InputGroup maxWidth="309.333px">
+                    <label htmlFor="confirmDeliveryEmail">
+                      Confirme o e-mail
+                    </label>
+                    <input
+                      id="confirmDeliveryEmail"
+                      type="email"
+                      name="confirmDeliveryEmail"
+                      value={form.values.confirmDeliveryEmail}
+                      onChange={form.handleChange}
+                      onBlur={form.handleBlur}
+                      className={
+                        checkInputhasError('confirmDeliveryEmail')
+                          ? 'error'
+                          : ''
+                      }
+                    />
+                    <S.ErroMensagem>
+                      {getErrorMessage(
+                        'confirmDeliveryEmail',
+                        form.errors.confirmDeliveryEmail
+                      )}
+                    </S.ErroMensagem>
+                  </S.InputGroup>
+                </S.Row>
+              </S.DivEntrega>
             </>
           </Card>
-          <Card title="Pagamento">
+          <Card className="card-inputs" title="Pagamento">
             <>
-              <S.TabButton
-                type="button"
-                isActive={!payWithCard}
-                onClick={() => payBoleto()}
-              >
-                <img src={boletoImg} alt="pagar por boleto" />
-                Boleto bancário
-              </S.TabButton>
-              <S.TabButton
-                type="button"
-                isActive={payWithCard}
-                onClick={() => payCard()}
-              >
-                <img src={cartaoImg} alt="pagar por cartão" />
-                Cartão de crédito
-              </S.TabButton>
+              <S.DivTabButton>
+                <S.TabButton
+                  type="button"
+                  isActive={!payWithCard}
+                  onClick={() => payBoleto()}
+                >
+                  <img src={boletoImg} alt="pagar por boleto" />
+                  Boleto bancário
+                </S.TabButton>
+                <S.TabButton
+                  type="button"
+                  isActive={payWithCard}
+                  onClick={() => payCard()}
+                >
+                  <img src={cartaoImg} alt="pagar por cartão" />
+                  Cartão de crédito
+                </S.TabButton>
+              </S.DivTabButton>
               <div className="margin-top">
                 {payWithCard ? (
                   <>
@@ -378,7 +451,7 @@ const Checkout = () => {
                         <label htmlFor="cpfCardOwner">
                           CPF do titular do cartão
                         </label>
-                        <input
+                        <InputMask
                           id="cpfCardOwner"
                           type="text"
                           name="cpfCardOwner"
@@ -388,6 +461,8 @@ const Checkout = () => {
                           className={
                             checkInputhasError('cpfCardOwner') ? 'error' : ''
                           }
+                          mask="999.999.999-99"
+                          maskChar={''}
                         />
                         <S.ErroMensagem>
                           {getErrorMessage(
@@ -397,7 +472,7 @@ const Checkout = () => {
                         </S.ErroMensagem>
                       </S.InputGroup>
                     </S.Row>
-                    <S.Row marginTop="24px">
+                    <S.Row marginTop="10px">
                       <S.InputGroup maxWidth="275.4px">
                         <label htmlFor="cardDisplayName">Nome no cartão</label>
                         <input
@@ -418,9 +493,9 @@ const Checkout = () => {
                           )}
                         </S.ErroMensagem>
                       </S.InputGroup>
-                      <S.InputGroup maxWidth="275.4px">
+                      <S.InputGroup maxWidth="215.4px">
                         <label htmlFor="cardNumber">Número do cartão</label>
-                        <input
+                        <InputMask
                           id="cardNumber"
                           type="text"
                           name="cardNumber"
@@ -430,6 +505,8 @@ const Checkout = () => {
                           className={
                             checkInputhasError('cardNumber') ? 'error' : ''
                           }
+                          mask="9999 9999 9999 9999"
+                          maskChar={''}
                         />
                         <S.ErroMensagem>
                           {getErrorMessage(
@@ -440,7 +517,7 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expireMonth">Mês do vencimento</label>
-                        <input
+                        <InputMask
                           id="expireMonth"
                           type="text"
                           name="expireMonth"
@@ -450,6 +527,8 @@ const Checkout = () => {
                           className={
                             checkInputhasError('expireMonth') ? 'error' : ''
                           }
+                          mask="99"
+                          maskChar={''}
                         />
                         <S.ErroMensagem>
                           {getErrorMessage(
@@ -460,7 +539,7 @@ const Checkout = () => {
                       </S.InputGroup>
                       <S.InputGroup maxWidth="123px">
                         <label htmlFor="expireYear">Ano do vencimento</label>
-                        <input
+                        <InputMask
                           id="expireYear"
                           type="text"
                           name="expireYear"
@@ -470,6 +549,8 @@ const Checkout = () => {
                           className={
                             checkInputhasError('expireYear') ? 'error' : ''
                           }
+                          mask="9999"
+                          maskChar={''}
                         />
                         <S.ErroMensagem>
                           {getErrorMessage(
@@ -478,9 +559,9 @@ const Checkout = () => {
                           )}
                         </S.ErroMensagem>
                       </S.InputGroup>
-                      <S.InputGroup maxWidth="48px">
+                      <S.InputGroup maxWidth="108px">
                         <label htmlFor="cardCode">CVV</label>
-                        <input
+                        <InputMask
                           id="cardCode"
                           type="text"
                           name="cardCode"
@@ -490,13 +571,15 @@ const Checkout = () => {
                           className={
                             checkInputhasError('cardCode') ? 'error' : ''
                           }
+                          mask="999"
+                          maskChar={''}
                         />
                         <S.ErroMensagem>
                           {getErrorMessage('cardCode', form.errors.cardCode)}
                         </S.ErroMensagem>
                       </S.InputGroup>
                     </S.Row>
-                    <S.Row marginTop="24px">
+                    <S.Row marginTop="10px">
                       <S.InputGroup maxWidth="150px">
                         <label htmlFor="installments">Parcelamento</label>
                         <select
@@ -510,7 +593,10 @@ const Checkout = () => {
                           }
                         >
                           {installments.map((parcelas) => (
-                            <option key={parcelas.quantity}>
+                            <option
+                              value={parcelas.quantity}
+                              key={parcelas.quantity}
+                            >
                               {parcelas.quantity}x de {parcelas.formattedAmount}
                             </option>
                           ))}
@@ -537,16 +623,21 @@ const Checkout = () => {
               </div>
             </>
           </Card>
-          <Button
-            tipo="submit"
-            title="Clique aqui para finalizar a compra"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Finalizando compra...' : 'Finalizar compra'}
-          </Button>
-          <S.ErroMensagemGeral>
+          <S.DivButtonFinal>
+            <Button
+              tipo="submit"
+              title="Clique aqui para finalizar a compra"
+              disabled={isLoading}
+              classe={isLoading ? 'is-loading' : ''}
+            >
+              Finalizar Compra
+            </Button>
+          </S.DivButtonFinal>
+          <S.ErroMensagemGeral className={isLoading ? 'is-loading' : ''}>
             {checkGeneralError()
               ? 'Por favor, corrija os erros presentes no formulário e tente novamente'
+              : isLoading
+              ? 'Finalizando compra...'
               : ''}
           </S.ErroMensagemGeral>
         </form>

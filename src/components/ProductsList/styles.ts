@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { PropsProductsList } from '.'
 import { Cores, breakpoints } from '../../styles'
 import { Card } from '../Product/styles'
 

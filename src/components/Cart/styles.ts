@@ -81,6 +81,7 @@ export const CartItem = styled.li`
     font-size: 16px;
     font-weight: bold;
     color: ${Cores.branca};
+    margin-bottom: 4px;
   }
 
   span {
@@ -92,8 +93,8 @@ export const CartItem = styled.li`
 
   ${TagContainer} {
     margin-right: 8px;
-    margin-top: 8px;
-    margin-bottom: 16px;
+    margin-top: 4px;
+    margin-bottom: 8px;
   }
 
   button {
