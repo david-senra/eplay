@@ -65,7 +65,7 @@ const Cart = () => {
           title="Clique aqui para continuar com a compra"
           onClick={items.length === 0 ? closeCart : goToCheckOut}
         >
-          {items.length > 0 ? 'Continuar com a compra' : 'Fechar'}
+          {items.length > 0 ? 'Prosseguir para o checkout' : 'Fechar'}
         </Button>
       </S.Aside>
     </S.DivPrincipal>
