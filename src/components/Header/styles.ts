@@ -61,14 +61,19 @@ export const NavMobile = styled.nav`
   height: 0;
   animation: ${comeOut} 0.8s;
 
-  &.is-open {
-    animation: ${comeIn} 0.8s;
-    height: 160px;
-  }
-
-  &.initial {
-    animation: ${comeOut} 0;
+  @media (max-width: ${breakpoints.tablet}) {
     height: 0;
+    animation: ${comeOut} 0.8s;
+
+    &.initial {
+      animation: ${comeOut} 0;
+      height: 0;
+    }
+
+    &.is-open {
+      animation: ${comeIn} 0.8s;
+      height: 160px;
+    }
   }
 `
 
