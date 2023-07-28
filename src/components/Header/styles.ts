@@ -59,7 +59,6 @@ export const NavMobile = styled.nav`
   display: block;
   overflow: hidden;
   height: 0;
-  animation: ${comeOut} 0.8s;
 
   @media (max-width: ${breakpoints.tablet}) {
     height: 0;
