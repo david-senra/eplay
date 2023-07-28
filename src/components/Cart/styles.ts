@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Cores } from '../../styles'
 import { TagContainer } from '../Tag/styles'
 import { ButtonContainer } from '../Button/styles'
@@ -10,13 +10,27 @@ export const DivPrincipal = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  display: none;
+  display: flex;
   justify-content: flex-end;
   z-index: 2;
+  visibility: hidden;
+  transition: visibility 1s;
 
   &.is-open {
     display: flex;
+    transition: visibility 1s;
+    visibility: visible;
   }
+`
+
+const fadeIn = keyframes`
+  from {opacity: 0}
+  to {opacity: 0.7}
+`
+
+const fadeOut = keyframes`
+  from {opacity: 0.7}
+  to {opacity: 0}
 `
 
 export const DivOverlay = styled.div`
@@ -26,8 +40,32 @@ export const DivOverlay = styled.div`
   width: 100%;
   height: 100%;
   background-color: #000;
-  opacity: 0.7;
   z-index: 1;
+  animation: ${fadeIn} 0.8s;
+  opacity: 0.7;
+
+  &.out-effect {
+    animation: ${fadeOut} 0.8s;
+    opacity: 0;
+  }
+`
+
+const enterScreen = keyframes`
+  from {
+    position: absolute;
+    right: -500px
+  }
+  to {position: absolute;
+  right: 0}
+`
+
+const exitScreen = keyframes`
+from {
+  position: absolute;
+  right: 0
+}
+to {position: absolute;
+right: -500px}
 `
 
 export const Aside = styled.aside`
@@ -36,10 +74,20 @@ export const Aside = styled.aside`
   padding: 40px 16px 0 16px;
   max-width: 360px;
   width: 100%;
+  animation: ${enterScreen} 0.6s;
+  height: 100vh;
+  position: absolute;
+  right: 0;
 
   ${ButtonContainer} {
     max-width: 100%;
     width: 100%;
+  }
+
+  &.out-effect {
+    animation: ${exitScreen} 0.8s;
+    position: absolute;
+    right: -500px;
   }
 `
 

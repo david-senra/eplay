@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { add, open } from '../../store/reducers/cart'
+import { add } from '../../store/reducers/cart'
 import { formataPreco } from '../../utils'
 import Button from '../Button'
 import Tag from '../Tag'
@@ -14,7 +14,6 @@ const Hero = ({ jogo }: PropsHero) => {
 
   const addToCart = () => {
     dispatch(add(jogo))
-    dispatch(open())
   }
 
   return (

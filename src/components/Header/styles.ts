@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Cores, breakpoints } from '../../styles'
 
 export const MenuLinks = styled.ul`
@@ -45,11 +45,30 @@ export const HeaderRow = styled.div`
   }
 `
 
+const comeIn = keyframes`
+  from {height: 0}
+  to {height: 160px}
+`
+
+const comeOut = keyframes`
+  from {height: 160px}
+  to {height: 0}
+`
+
 export const NavMobile = styled.nav`
-  display: none;
+  display: block;
+  overflow: hidden;
+  height: 0;
+  animation: ${comeOut} 0.8s;
 
   &.is-open {
-    display: block;
+    animation: ${comeIn} 0.8s;
+    height: 160px;
+  }
+
+  &.initial {
+    animation: ${comeOut} 0;
+    height: 0;
   }
 `
 

@@ -24,9 +24,12 @@ const cartSlice = createSlice({
       const jogoProcurado = state.items.find(
         (item) => item.id === action.payload.id
       )
-      jogoProcurado
-        ? alert('Jogo já adicionado')
-        : state.items.push(action.payload)
+      if (jogoProcurado) {
+        alert('Jogo já adicionado')
+      } else {
+        state.items.push(action.payload)
+        state.isOpen = true
+      }
     },
     remove: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter((item) => item.id !== action.payload)

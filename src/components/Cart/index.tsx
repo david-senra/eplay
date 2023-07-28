@@ -14,7 +14,6 @@ const Cart = () => {
   const { isOpen, items } = useSelector((state: RootReducer) => state.cart)
 
   const navigate = useNavigate()
-
   const dispatch = useDispatch()
 
   const closeCart = () => {
@@ -32,9 +31,12 @@ const Cart = () => {
   }
 
   return (
-    <S.DivPrincipal className={isOpen ? 'is-open' : ''}>
-      <S.DivOverlay onClick={closeCart} />
-      <S.Aside>
+    <S.DivPrincipal key={'hello'} className={isOpen ? 'is-open' : ''}>
+      <S.DivOverlay
+        className={isOpen ? 'on-effect' : 'out-effect'}
+        onClick={closeCart}
+      />
+      <S.Aside className={isOpen ? 'on-effect' : 'out-effect'}>
         <ul>
           {items.map(({ id, media, name, details, prices }) => (
             <S.CartItem key={id}>
