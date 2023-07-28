@@ -14,7 +14,7 @@ const Header = () => {
   const { items } = useSelector((state: RootReducer) => state.cart)
 
   const openCart = () => {
-    setIsMobileMenuOpen('is-open')
+    setIsMobileMenuOpen('closed')
     dispatch(open())
   }
 
